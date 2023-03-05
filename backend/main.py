@@ -62,7 +62,8 @@ def create(id:int,student:Student):
 
 
 # # names[id]["name"]=student.name wont work because names[id] isn't a dict
-# # for some reason fastAPI it convert it into an object 
+# # for some reason fastAPI convert it into an object 
+# # names is a dictionary, but that's not what we're doing on .name in names[id].name, the .name is getting the attribute named name of names[id], which isn't a dictionary
 @app.put("/update-students/{id}")
 def update(id:int,student:update):
     if id not in names:
