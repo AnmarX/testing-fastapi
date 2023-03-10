@@ -1,7 +1,7 @@
 from fastapi import FastAPI,Path
 from typing import Optional
 from pydantic import BaseModel
-
+from fastapi.responses import ORJSONResponse
 app = FastAPI()
 
 class Student(BaseModel):
@@ -13,15 +13,17 @@ class update(BaseModel):
     age : Optional[int]=None
 
 names={
-    1:{
-    "name":"anmar",
-    "age":23,
-    },
-    2:{
-    "name":"nemo",
-    "age":50,
-    },
+        1:{
+            "name":"anmar",
+            "age":23,
+        },
+
+        2:{
+            "name":"nemo",
+            "age":50,
+        }
 }
+
 @app.get("/")
 def index():
     return "anmar"
@@ -36,7 +38,7 @@ def get_names(id:int=Path(None,description= "write id number here",gt=0)):
 # # optional to make the field not required to enter by the user
 # # qurey parameter
 # # http://localhost:8000/get-student-names?name=anmar&age=23
-@app.get("/get-student-names-byname")
+@app.get("/get-student-names-bynam")
 def get_student_names(*,name:Optional [str]=None,age : int):
     for student_id in names:
         if names[student_id]["name"] == name or names[student_id]["age"] == age:
@@ -52,7 +54,7 @@ def get_student_names(*,name:Optional [str]=None,age : int):
 #             return names[id]
 #     return "not found"
 
-
+# # if we want the fields to be on the body not the url we use class to sepecify the fields so it wont get on the url
 @app.post("/create-students/{id}")
 def create(id:int,student:Student):
     if id in names:
@@ -81,3 +83,7 @@ def delete(id:int):
         return "not found"
     del names[id]
     return "student deleted"
+
+@app.get("/items/", response_class=ORJSONResponse)
+async def read_items():
+    return ORJSONResponse([{"item_id": "Foo"}])
